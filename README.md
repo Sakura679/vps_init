@@ -32,11 +32,14 @@ touch /run/openrc/softlevel
 #### 网络优化
 设置MTU：
 ```
+ip link set dev eth0 mtu 1480
+
+写入脚本，开机自动设置放丢失
 cat > /etc/local.d/mtu.start <<'EOF'
 #!/bin/sh
-ip link set dev eth0 mtu 1460
+ip link set dev eth0 mtu 1480
 EOF
-
+启动
 chmod +x /etc/local.d/mtu.start
 rc-update add local
 ```

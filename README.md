@@ -23,6 +23,12 @@ EOF
 apk update
 ```
 
+#### 安装包管理器
+```
+apk update
+apk add bash curl wget ca-certificates
+```
+
 #### 创建缺失文件（若系统中缺失则使用下方命令）
 ```
 mkdir -p /run/openrc

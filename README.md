@@ -65,6 +65,14 @@ net.ipv4.tcp_congestion_control=bbr
 EOF
 
 sysctl -p
+
+开机启动脚本
+cat > /etc/local.d/setup_bbr.start <<'EOF'
+#!/bin/sh
+sysctl -p
+EOF
+chmod +x /etc/local.d/setup_bbr.start
+rc-update add local
 ```
 
 修改DNS：
@@ -87,7 +95,7 @@ EOF
 脚本赋权：
 chmod +x /usr/local/bin/clean_resolv.sh
 加入crond定时任务：
-cat > /etc/crontabs/root <<'EOF'
+cat >> /etc/crontabs/root <<'EOF'
 */30 * * * * /usr/local/bin/clean_resolv.sh
 EOF
 启动：
@@ -103,6 +111,14 @@ net.ipv6.conf.default.disable_ipv6=1
 EOF
 
 sysctl -p
+
+开机启动脚本
+cat > /etc/local.d/setup_bbr.start <<'EOF'
+#!/bin/sh
+sysctl -p
+EOF
+chmod +x /etc/local.d/setup_bbr.start
+rc-update add local
 ```
 
 

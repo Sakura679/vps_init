@@ -50,6 +50,20 @@ chmod +x /etc/local.d/mtu.start
 rc-update add local
 ```
 
+启用bbr：
+```
+检查bbr是否安装
+lsmod | grep bbr
+
+查看是否已启用
+sysctl net.ipv4.tcp_congestion_control
+
+启用bbr
+echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+sysctl -p
+```
+
 修改DNS：
 ```
 cat > /etc/resolv.conf <<'EOF'

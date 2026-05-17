@@ -59,8 +59,11 @@ lsmod | grep bbr
 sysctl net.ipv4.tcp_congestion_control
 
 启用bbr
-echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+cat > /etc/sysctl.conf <<'EOF'
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+EOF
+
 sysctl -p
 ```
 

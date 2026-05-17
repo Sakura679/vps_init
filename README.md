@@ -97,7 +97,7 @@ rc-update add crond
 
 禁用ipv6：
 ```
-cat > /etc/sysctl.conf <<'EOF'
+cat >> /etc/sysctl.conf <<'EOF'
 net.ipv6.conf.all.disable_ipv6=1
 net.ipv6.conf.default.disable_ipv6=1
 EOF

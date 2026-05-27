@@ -45,7 +45,7 @@ cat > /etc/local.d/mtu.start <<'EOF'
 #!/bin/sh
 ip link set dev eth0 mtu 1480
 EOF
-启动
+
 chmod +x /etc/local.d/mtu.start
 rc-update add local
 ```
@@ -71,6 +71,7 @@ cat > /etc/local.d/setup_bbr.start <<'EOF'
 #!/bin/sh
 sysctl -p
 EOF
+
 chmod +x /etc/local.d/setup_bbr.start
 rc-update add local
 ```
@@ -92,13 +93,14 @@ cat > /usr/local/bin/clean_resolv.sh <<'EOF'
 #!/bin/sh
 rm -f /etc/resolv.conf.*
 EOF
-脚本赋权：
+
 chmod +x /usr/local/bin/clean_resolv.sh
+
 加入crond定时任务：
 cat >> /etc/crontabs/root <<'EOF'
 */30 * * * * /usr/local/bin/clean_resolv.sh
 EOF
-启动：
+
 rc-service crond start
 rc-update add crond
 ```
@@ -117,6 +119,7 @@ cat > /etc/local.d/setup_bbr.start <<'EOF'
 #!/bin/sh
 sysctl -p
 EOF
+
 chmod +x /etc/local.d/setup_bbr.start
 rc-update add local
 ```

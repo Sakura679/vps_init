@@ -36,7 +36,7 @@ touch /run/openrc/softlevel
 ```
 
 #### 网络优化
-设置MTU：
+设置MTU(非必要不设置)：
 ```
 ip link set dev eth0 mtu 1480
 

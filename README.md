@@ -6,8 +6,8 @@
 清华：
 ```
 cat > /etc/apk/repositories <<'EOF'
-https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.20/main
-https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.20/community
+https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.23/main
+https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.23/community
 EOF
 
 apk update
@@ -16,8 +16,8 @@ apk update
 阿里：
 ```
 cat > /etc/apk/repositories <<'EOF'
-https://mirrors.aliyun.com/alpine/v3.22/main/
-https://mirrors.aliyun.com/alpine/v3.22/community/
+https://mirrors.aliyun.com/alpine/v3.23/main/
+https://mirrors.aliyun.com/alpine/v3.23/community/
 EOF
 
 apk update

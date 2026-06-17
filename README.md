@@ -16,7 +16,8 @@ deb https://mirrors.tuna.tsinghua.edu.cn/debian-security trixie-security main co
 EOF
 
 apt update
-apt upgrade -y
+apt --fix-broken install -y
+apt full-upgrade -y
 ```
 
 

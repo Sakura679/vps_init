@@ -1,5 +1,19 @@
 # vps_init
 云服务器初始配置优化
+### debain系统
+#### 更换镜像源：
+```
+cat > /etc/apt/sources.list <<'EOF'
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware
+EOF
+
+apt update
+apt upgrade -y
+```
+
 
 ### AP系统
 #### 更换镜像源：

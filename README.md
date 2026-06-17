@@ -1,5 +1,10 @@
 # vps_init
 云服务器初始配置优化
+## 启用bbr
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/Sakura679/vps_init/main/bbr.sh)
+```
+
 ### debain系统
 #### 更换镜像源：
 ```

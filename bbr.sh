@@ -9,42 +9,21 @@ echo
 
 ########################################
 
-# 系统识别
+# 系统信息
 
 ########################################
 
 if [ -f /etc/os-release ]; then
 . /etc/os-release
-OS="$ID"
-echo "检测到系统: $PRETTY_NAME"
+echo "检测到系统: ${PRETTY_NAME}"
 else
 echo "无法识别系统"
-exit 1
 fi
 
 echo
-
-########################################
-
-# 容器检测
-
-########################################
-
-IS_CONTAINER=0
-
-if [ -f /.dockerenv ]; then
-IS_CONTAINER=1
-fi
-
-if grep -qaE 'docker|lxc|containerd|kubepods' /proc/1/cgroup 2>/dev/null; then
-IS_CONTAINER=1
-fi
-
-if [ "$IS_CONTAINER" = "1" ]; then
-echo "检测到容器环境（Docker/LXC/LXD）"
-echo "BBR 是否可启用取决于宿主机内核"
+echo "当前内核:"
+uname -r
 echo
-fi
 
 ########################################
 
@@ -52,56 +31,11 @@ fi
 
 ########################################
 
-install_procps() {
-
-```
-case "$OS" in
-
-    debian|ubuntu)
-        apt-get update -qq
-        apt-get install -y procps
-        ;;
-
-    centos|rhel)
-        yum install -y procps-ng
-        ;;
-
-    rocky|almalinux|fedora)
-        dnf install -y procps-ng
-        ;;
-
-    alpine)
-        apk add --no-cache procps-ng
-        ;;
-
-    *)
-        echo "未知系统，无法安装 procps"
-        exit 1
-        ;;
-esac
-```
-
-}
-
 if ! command -v sysctl >/dev/null 2>&1; then
-echo "sysctl 不存在，尝试安装..."
-install_procps
-fi
-
-if ! command -v sysctl >/dev/null 2>&1; then
-echo "sysctl 安装失败"
+echo "错误: 未找到 sysctl"
+echo "请先安装 procps/procps-ng"
 exit 1
 fi
-
-########################################
-
-# 内核信息
-
-########################################
-
-echo "当前内核:"
-uname -r
-echo
 
 ########################################
 
@@ -109,11 +43,10 @@ echo
 
 ########################################
 
-AVAILABLE=$(sysctl -n net.ipv4.tcp_available_congestion_control 2>/dev/null || true)
+AVAILABLE="$(sysctl -n net.ipv4.tcp_available_congestion_control 2>/dev/null || true)"
 
 if [ -z "$AVAILABLE" ]; then
 echo "无法读取 tcp_available_congestion_control"
-echo "当前环境可能不允许修改 TCP 参数"
 exit 1
 fi
 
@@ -123,30 +56,14 @@ echo
 
 if ! echo "$AVAILABLE" | grep -qw bbr; then
 echo "当前内核不支持 BBR"
-echo
-
-```
-MAJOR=$(uname -r | cut -d. -f1)
-MINOR=$(uname -r | cut -d. -f2)
-
-if [ "$MAJOR" -lt 4 ] || \
-   { [ "$MAJOR" -eq 4 ] && [ "$MINOR" -lt 9 ]; }; then
-    echo "原因: 内核版本低于 4.9"
-else
-    echo "原因: 宿主机未编译 BBR 或容器未开放"
-fi
-
 exit 1
-```
-
 fi
 
-echo "内核支持 BBR"
-echo
+echo "✓ 检测到 BBR 支持"
 
 ########################################
 
-# 检查 fq
+# fq检测（可选）
 
 ########################################
 
@@ -154,35 +71,22 @@ USE_FQ=0
 
 if [ -f /proc/sys/net/core/default_qdisc ]; then
 USE_FQ=1
-fi
-
-########################################
-
-# 测试是否有写权限
-
-########################################
-
-CURRENT=$(sysctl -n net.ipv4.tcp_congestion_control 2>/dev/null || echo "")
-
-if sysctl -w net.ipv4.tcp_congestion_control=bbr >/dev/null 2>&1; then
-echo "检测到可修改 tcp_congestion_control"
+echo "✓ 检测到 fq 支持"
 else
-echo "警告: 当前环境不允许修改 tcp_congestion_control"
-echo "如果是 LXD/LXC，请在宿主机启用 BBR"
-exit 1
+echo "! 未检测到 default_qdisc，仅启用 BBR"
 fi
+
+echo
 
 ########################################
 
-# 写配置
+# 写入配置
 
 ########################################
 
 mkdir -p /etc/sysctl.d
 
-CONF=/etc/sysctl.d/99-bbr.conf
-
-echo "写入配置: $CONF"
+CONF="/etc/sysctl.d/99-bbr.conf"
 
 cat > "$CONF" <<EOF
 
@@ -197,37 +101,48 @@ net.core.default_qdisc=fq
 EOF
 fi
 
+echo "配置已写入:"
+echo "$CONF"
+echo
+
 ########################################
 
 # 应用配置
 
 ########################################
 
-if command -v sysctl >/dev/null 2>&1; then
+echo "应用配置..."
+
 sysctl --system >/dev/null 2>&1 || true
-fi
 
 ########################################
 
-# 验证
+# 验证结果
 
 ########################################
+
+CURRENT="$(sysctl -n net.ipv4.tcp_congestion_control 2>/dev/null || true)"
 
 echo
 echo "验证结果:"
 echo "--------------------------------------"
 
-CONG=$(sysctl -n net.ipv4.tcp_congestion_control 2>/dev/null || echo "unknown")
-
-if [ "$CONG" = "bbr" ]; then
-echo "BBR 启用成功"
+if [ "$CURRENT" = "bbr" ]; then
+echo "✓ BBR 已成功启用"
 else
-echo "BBR 未生效"
-echo "当前算法: $CONG"
-exit 1
+echo "! BBR 配置已写入，但当前未生效"
+echo
+echo "当前算法: ${CURRENT:-unknown}"
+echo
+echo "可能原因:"
+echo "  1. 宿主机限制"
+echo "  2. 容器未开放相关 sysctl"
+echo "  3. 需要重启系统/容器"
 fi
 
 echo
+echo "当前状态:"
+
 sysctl net.ipv4.tcp_congestion_control 2>/dev/null || true
 
 if [ -f /proc/sys/net/core/default_qdisc ]; then

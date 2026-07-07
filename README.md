@@ -2,6 +2,11 @@
 云服务器初始配置优化
 ## 启用bbr
 ```bash
+# bbr-v3
+bash <(curl -Ls https://raw.githubusercontent.com/Sakura679/vps_init/main/bbr-v3.sh)
+```
+```bash
+# bbr
 bash <(curl -Ls https://raw.githubusercontent.com/Sakura679/vps_init/main/bbr.sh)
 ```
 

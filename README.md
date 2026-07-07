@@ -9,6 +9,10 @@ bash <(curl -Ls https://raw.githubusercontent.com/Sakura679/vps_init/main/bbr-v3
 # bbr
 bash <(curl -Ls https://raw.githubusercontent.com/Sakura679/vps_init/main/bbr.sh)
 ```
+```bash
+# 检查bbrv3
+bash <(curl -Ls https://raw.githubusercontent.com/Sakura679/vps_init/main/check_bbrv3.sh)
+```
 
 ### debain系统
 #### 更换镜像源：

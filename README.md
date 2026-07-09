@@ -18,10 +18,10 @@ bash <(curl -Ls https://raw.githubusercontent.com/Sakura679/vps_init/main/check_
 #### 更换镜像源：
 ```
 cat > /etc/apt/sources.list <<'EOF'
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-free non-free-firmware
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-updates main contrib non-free non-free-firmware
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-backports main contrib non-free non-free-firmware
-deb https://mirrors.tuna.tsinghua.edu.cn/debian-security trixie-security main contrib non-free non-free-firmware
+deb https://mirrors.aliyun.com/debian/ trixie main contrib non-free non-free-firmware
+deb https://mirrors.aliyun.com/debian/ trixie-updates main contrib non-free non-free-firmware
+deb https://mirrors.aliyun.com/debian/ trixie-backports main contrib non-free non-free-firmware
+deb https://mirrors.aliyun.com/debian-security trixie-security main contrib non-free non-free-firmware
 EOF
 
 apt update
@@ -32,16 +32,6 @@ apt full-upgrade -y
 
 ### AP系统
 #### 更换镜像源：
-清华：
-```
-cat > /etc/apk/repositories <<'EOF'
-https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.23/main
-https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.23/community
-EOF
-
-apk update
-```
-
 阿里：
 ```
 cat > /etc/apk/repositories <<'EOF'
